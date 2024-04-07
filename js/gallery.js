@@ -1,7 +1,7 @@
 const images = [
  {
  preview:
- 'https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820__480.jpg',
+ 'https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820__340.jpg',
  original:
  'https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820_1280.jpg',
  description: 'Hokkaido Flower',
@@ -69,21 +69,35 @@ gallery.addEventListener("click", handleClick);
 
 function handleClick(event) {
     event.preventDefault();
-
+    if (event.target.nodeName !== 'IMG'){
+        return;
+    }
+    const largeImg = event.target.dataset.source;
+    console.log(largeImg);
+  modal.element().querySelector('img').src = largeImg;
+  modal.element().querySelector('img').alt = event.target.alt;
+  modal.show();
 } 
 
-function createMarkup(array) {
-     array.map(({ }) =>
-        `<li class="gallery-item">
-  <a class="gallery-link" href="${original}">
-    <img
-      class="gallery-image"
-      src="${preview}"
-      data-source="large-image.jpg"
-      alt="${description}"
-    />
-  </a>
-</li>`).join("")
-}
+const galleryMarkup = images.map(({ preview, original, description }) =>
+ `
+    <li class="gallery-item">
+      <a class="gallery-link" href="${original}">
+        <img
+          class="gallery-image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+    </li>
+  `
+  )
+  .join('');
 
-gallery.insertAdjacentHTML("beforeend", createMarkup(images));
+gallery.insertAdjacentHTML('beforeend', galleryMarkup);
+
+const modal = basicLightbox.create(`
+  <img src="" alt="" width=800" height="600">
+`);
+
